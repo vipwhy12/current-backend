@@ -3,16 +3,18 @@ package com.current.main.article.infrastructure
 import com.current.main.article.domain.Article
 import com.current.main.article.domain.ArticleClient
 import com.prof18.rssparser.RssParser
+import org.springframework.beans.factory.annotation.Value
+
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
 @Component
-class TechCrunchClient : ArticleClient {
+class TechCrunchClient(
+    @Value("\${rss.techcrunch.url}") private val rssUrl: String
+) : ArticleClient {
     override val sourceName: String = "TechCrunch"
-
     private val parser = RssParser()
-    private val rssUrl = "https://techcrunch.com/feed/"
 
     override suspend fun fetchLatestArticles(): List<Article> {
         val channel = parser.getRssChannel(rssUrl)
