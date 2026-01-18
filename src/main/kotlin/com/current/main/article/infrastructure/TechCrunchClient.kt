@@ -3,6 +3,7 @@ package com.current.main.article.infrastructure
 import com.current.main.article.domain.Article
 import com.current.main.article.domain.ArticleClient
 import com.prof18.rssparser.RssParser
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 
 import org.springframework.stereotype.Component
@@ -16,22 +17,28 @@ class TechCrunchClient(
     override val sourceName: String = "TechCrunch"
     private val parser = RssParser()
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override suspend fun fetchLatestArticles(): List<Article> {
-        val channel = parser.getRssChannel(rssUrl)
+        return try {
+            val channel = parser.getRssChannel(rssUrl)
 
-        // RSS Item을 우리 도메인 모델인 Article로 변환합니다.
-        return channel.items.mapNotNull { item ->
-            val title = item.title ?: return@mapNotNull null
-            val link = item.link ?: return@mapNotNull null
+            channel.items.mapNotNull { item ->
+                val title = item.title ?: return@mapNotNull null
+                val link = item.link ?: return@mapNotNull null
 
-            Article(
-                title = title,
-                link = link,
-                author = item.author,
-                description = item.description,
-                publishedAt = parseDate(item.pubDate),
-                source = sourceName
-            )
+                Article(
+                    title = title,
+                    link = link,
+                    author = item.author,
+                    description = item.description,
+                    publishedAt = parseDate(item.pubDate),
+                    source = sourceName
+                )
+            }
+        } catch (e: Exception) {
+            log.error("TechCrunch RSS 피드를 가져오는 중 에러 발생: URL={}, message={}", rssUrl, e.message)
+            emptyList()
         }
     }
 
