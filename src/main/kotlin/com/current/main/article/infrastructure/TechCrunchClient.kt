@@ -20,10 +20,13 @@ class TechCrunchClient(
         val channel = parser.getRssChannel(rssUrl)
 
         // RSS Item을 우리 도메인 모델인 Article로 변환합니다.
-        return channel.items.map { item ->
+        return channel.items.mapNotNull { item ->
+            val title = item.title ?: return@mapNotNull null
+            val link = item.link ?: return@mapNotNull null
+
             Article(
-                title = item.title ?: "제목 없음",
-                link = item.link ?: "",
+                title = title,
+                link = link,
                 author = item.author,
                 description = item.description,
                 publishedAt = parseDate(item.pubDate),
@@ -44,5 +47,5 @@ class TechCrunchClient(
             null
         }
     }
-
 }
+
