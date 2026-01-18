@@ -37,9 +37,9 @@ class TechCrunchClient : ArticleClient {
                 //RFC_1123 형식을 사용합니다 (ex: Wed, 02 Oct 2024 10:00:00 +0000)
                 OffsetDateTime.parse(it, DateTimeFormatter.RFC_1123_DATE_TIME)
             }
-        } catch (e: Exception) {
+        } catch (e: java.time.format.DateTimeParseException) {
             // 파싱 실패 시 현재 시간으로 대체
-            OffsetDateTime.now()
+            null
         }
     }
 
