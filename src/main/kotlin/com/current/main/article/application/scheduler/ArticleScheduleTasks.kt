@@ -13,7 +13,7 @@ class ArticleScheduleTasks(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(fixedDelayString = "\${rss.scheduler.interval:600000}")
-    fun importTechCrunchArticles() = runBlocking {
+    fun syncArticlesPeriodically() = runBlocking {
         log.info("정기 뉴스 수집 시작...")
         articleService.syncAllArticles()
     }
