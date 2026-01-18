@@ -50,7 +50,6 @@ class TechCrunchClient(
                 OffsetDateTime.parse(it, DateTimeFormatter.RFC_1123_DATE_TIME)
             }
         } catch (e: java.time.format.DateTimeParseException) {
-            // 파싱 실패 시 현재 시간으로 대체
             null
         }
     }
