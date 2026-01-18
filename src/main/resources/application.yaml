@@ -5,3 +5,5 @@ spring:
 rss:
   techcrunch:
     url: https://techcrunch.com/feed/
+  scheduler:
+    interval: 600000 # 기본값 10분
